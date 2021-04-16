@@ -1,0 +1,114 @@
+Q.
+You are given a sequence A1,A2,…,AN. You want to remove all N elements of this sequence, one by one, in any order you choose.
+
+You have a value indicating how happy you are. Initially, this happiness is the bitwise OR of all the elements in the sequence. After each removal of an element from your sequence, the happiness increases by the bitwise OR of all the elements that currently remain in the sequence. (After all N elements are removed, the sequence is empty and the bitwise OR is 0.)
+
+Find the maximum possible happiness you can have at the end of this process and an order in which the elements should be removed such that the final happiness is maximum possible. If there are multiple solutions, you may find any one.
+
+Input
+The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows.
+The first line of each test case contains a single integer N.
+The second line contains N space separated integers A1,A2,…,AN.
+Output
+For each test case, print two lines.
+
+The first of these lines should contain a single integer - the maximum possible final happiness.
+The second line should contain N space-separated integers. For each valid i, the i-th of these integers should be the index (in the initial sequence) of the i-th removed element.
+Constraints
+1≤T≤100
+1≤N≤105
+0≤Ai≤109 for each valid i
+the sum of N over all test cases does not exceed 5⋅105
+Example Input
+2
+5
+1 2 3 4 5
+5
+2 3 4 5 6
+Example Output
+33
+1 2 4 3 5 
+34
+1 2 3 4 5
+Explanation
+Example case 1: Elements can be removed in the order (1,2,3,4,5)→(2,3,4,5)→(3,4,5)→(3,5)→(5).
+
+Example case 2: Elements can be removed in the order (2,3,4,5,6)→(3,4,5,6)→(4,5,6)→(5,6)→(6).
+
+
+
+
+
+Code:
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+bool cmp(pair<int, int>& a,
+         pair<int, int>& b)
+{
+    return a.second > b.second;
+}
+
+int main(){
+    int t,n,a;
+    cin >> t;
+    vector<bitset<32>> li;
+    vector<int> arr;
+    while(t--){
+        cin >> n;
+        li.clear();
+        for(int i = 0; i < n;i++){
+            cin >> a;
+            arr.push_back(a);
+            li.push_back(bitset<32>(a));
+        }
+        int ar[n];
+        vector<int> ans;
+        vector<int> scores(32,0);
+        for (int i=0;i<n;i++){
+            ar[i]=0;
+        }
+        for (int i=0;i<32;i++){
+            for (int j=0;j<n;j++){
+
+                if(li[j][i]==0){
+                    ar[j]++;
+                }
+                else{
+                    scores[i]++;
+                }
+            }
+        }
+        vector<pair<int,int>> values;
+        for(int i = 0 ; i < n;i++){
+            values.push_back({i + 1,ar[i]});
+        }
+        
+        sort(values.begin(),values.end(),cmp);
+        bitset<32> bit_or = bitset<32>(0);
+        long long final = 0;
+        for(int i = 0; i < n;i++){
+            bit_or |= li[i];
+        }
+        final = bit_or.to_ulong();
+        for(auto &a : values){
+            for(int i = 0; i < 32;i++){
+                if(li[a.first - 1][i] == 1){
+                    scores[i]--;
+                    if(scores[i] == 0){
+                        bit_or[i] = 0;    
+                    }
+                }
+            }
+            final += bit_or.to_ulong();
+        }
+        cout << final << endl;
+        for(auto &a : values){
+            cout << a.first << " ";
+        }
+        cout<<endl;
+
+    }
+}
