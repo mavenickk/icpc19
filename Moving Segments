@@ -1,0 +1,82 @@
+Q.
+N  line segments (numbered 1 through N) are placed on the x-axis. For each valid i, the i-th segment starts at x=Li and ends at x=Ri.
+
+At the time t=0, all segments start moving; for each valid i, the i-th segment starts moving with speed Vi. You need to assign a direction - left or right - to the movement of each segment, i.e. choose a sign for each Vi (not necessarily the same for all segments). The resulting movement must satisfy the following condition: at the time t=1010000, there are no two segments that touch or intersect.
+
+Decide if it is possible to assign directions to the segments in such a way that the above condition is satisfied.
+
+Input
+The first line of the input contains a single integer T denoting the number of test cases. The description of T test cases follows.
+The first line of each test case contains a single integer N.
+N lines follow. For each i (1≤i≤N), the i-th of these lines contains three space-separated integers Li, Ri and Vi.
+Output
+For each test case, print a single line containing the string "YES" if it is possible to assign the directions in a valid way or "NO" if it is impossible.
+
+Constraints
+1≤T≤100
+1≤N≤1,000
+1≤Li<Ri≤109 for each valid i
+1≤Vi≤109 for each valid i
+the sum of N over all test cases does not exceed 2,000
+Example Input
+2
+4
+5 7 2
+4 6 1
+1 5 2
+6 8 1
+4
+1 2 1
+1 2 1
+1 2 1
+1 2 1
+Example Output
+YES
+NO
+Explanation
+Example case 1: We can assign the direction left to the 1-st and 2-nd segment and right to the 3-rd and 4-th segment.
+
+Example case 2: There is no valid way to assign directions to segments.
+
+
+
+
+Code:
+
+for _ in range(int(input())):
+    n = int(input())
+    li = []
+    for _ in range(n):
+        a = list(map(int,input().split()))
+        li.append(a)
+    li.sort()
+    direction = []
+    for i in range(0,n - 1,2):
+        if li[i][1] >= li[i + 1][0] and li[i][2] == li[i+ 1][2]:
+            direction.append(0)
+            direction.append(1)
+        else:
+            direction.append(0)
+            direction.append(0)
+    if len(direction) != n:
+        direction.append(0)
+    ispossible = True
+    for i in range(n):
+        ans=True
+        flag=True
+        for j in range(i):
+            if li[i][0] <= li[j][1] and li[i][2] == li[j][2] and direction[i] == direction[j]:
+                if(flag==True):
+                    flag=False
+                    direction[i] = 1 - direction[i]
+                else:
+                    
+                    ans=False
+                    break
+        if not ans:
+            ispossible = False
+            break
+    if ispossible:
+        print("YES")
+    else:
+        print("NO")
