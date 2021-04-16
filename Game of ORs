@@ -112,3 +112,92 @@ int main(){
 
     }
 }
+
+
+
+Code 2:
+
+
+#include<bits/stdc++.h>
+using namespace std;
+#define N 1000006
+#define ll unsigned long long int
+ll arr[N];
+multiset <int> s;
+pair<ll,ll> ans[N];
+vector <ll> v;
+int main()
+{
+    ll n,t,temp,element;
+    ll x=0;
+    cin>>t;
+    while(t--)
+    {
+        ll happiness = 0;
+        cin>>n;
+        ll maxa = 0;
+        for(int i=0;i<n;i++)
+        {
+            cin>>arr[i];
+            s.insert(arr[i]);
+            ans[i]={0,0};
+            maxa = max(maxa,arr[i]);
+        }
+        happiness = maxa;
+        x = maxa;
+        s.erase(s.find(x));
+        v.push_back(x);
+        // cout<<s.size()<<' '<< x << '\n';
+        while(true)
+        {
+            maxa = 0;
+            for(auto i:s){
+                temp = (i & (~x));
+                if(maxa < temp)
+                {
+                    maxa = temp;
+                    element = i;
+                }
+            }
+            if((maxa | x) == x)
+                break;
+            x = (maxa | x);
+            happiness += x;
+            v.push_back(element);
+            // cout<<element<<'\n';
+            s.erase(s.find(element));
+        }
+        happiness = happiness + s.size() * x;
+        cout<<happiness<<'\n';
+        int countera = 0;
+        for(auto j:v)
+        {
+            // cout<<j<<' ';
+            for(int i=0;i<n;i++)
+                if(arr[i]==j)
+                {
+                    // cout<<i<<'\n';
+                    ans[i]={n-countera,i};
+                    break;
+                }
+            countera++;
+        }
+        countera = 1;
+        for(int i=0;i<n;i++)
+            if(ans[i].first==0)
+            {
+                ans[i] = {countera,i};
+                countera++;
+            }
+        // for(int i=0;i<n;i++)
+        //     cout<<ans[i].first<<' ';
+        // cout<<'\n';
+        sort(ans,ans+n);
+        for(int i=0;i<n;i++)
+            cout<<ans[i].second+1<<' ';
+        cout<<'\n';
+        s.clear();
+        v.clear();
+    }
+    return 0;
+}
